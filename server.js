@@ -34,7 +34,6 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 // Routes
 
-
 // A GET route for scraping the echoJS website
 app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with axios
@@ -57,15 +56,15 @@ app.get("/scrape", function(req, res) {
       db.Article.create(result)
         .then(function(dbArticle) {
           // View the added result in the console
-          console.log(dbArticle);
+          res.end();
         })
         .catch(function(err) {
           // If an error occurred, log it
           console.log(err);
+          res.end();
         });
     });
   });
-  res.end();
 });
 // Route for getting all Articles from the db
 app.get("/", function(req, res) {
@@ -74,9 +73,9 @@ app.get("/", function(req, res) {
     .then(function(dbArticle) {
       let hbsObject;
       hbsObject = {
-          articles: dbArticle
+        articles: dbArticle
       };
-      res.render("index", hbsObject);   
+      res.render("index", hbsObject);
     })
     .catch(function(err) {
       // If an error occurred, send it to the client
@@ -84,25 +83,25 @@ app.get("/", function(req, res) {
     });
 });
 //route for marking articles as saved
-app.get("/save/:id", function (req, res) {
+app.get("/save/:id", function(req, res) {
   db.Article.findOneAndUpdate({ _id: req.params.id }, { isSaved: true })
-      .then(function (data) {
-          res.json(data);
-      })
-      .catch(function (err) {
-          res.json(err);
-      });
+    .then(function(data) {
+      res.json(data);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
 });
 //find saved articles
 app.get("/saved", function(req, res) {
   // Grab every document in the Articles collection
-  db.Article.find({isSaved:true})
+  db.Article.find({ isSaved: true })
     .then(function(dbArticle) {
       let hbsObject;
       hbsObject = {
-          articles: dbArticle
+        articles: dbArticle
       };
-      res.render("saved", hbsObject);   
+      res.render("saved", hbsObject);
     })
     .catch(function(err) {
       // If an error occurred, send it to the client
@@ -110,45 +109,48 @@ app.get("/saved", function(req, res) {
     });
 });
 
-app.put("/delete/:id", function (req, res) {
+app.put("/delete/:id", function(req, res) {
   db.Article.findOneAndUpdate({ _id: req.params.id }, { isSaved: false })
-      .then(function (data) {
-          res.json(data)
-      })
-      .catch(function (err) {
-          res.json(err);
-      });
+    .then(function(data) {
+      res.json(data);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
 });
 
-app.post("/note/:id", function (req, res) {
-     db.Note.create(req.body)
-     .then(function (dbNote) {
-         return db.Article.findOneAndUpdate({ _id: req.params.id }, {$push: { note: dbNote._id }}, { new: true });
-     })
-     .then(function (dbArticle) {
-       console.log(dbArticle)
-         res.json(dbArticle);
-     })
-     .catch(function (err) {
-         res.json(err);
-     });
+app.post("/note/:id", function(req, res) {
+  db.Note.create(req.body)
+    .then(function(dbNote) {
+      return db.Article.findOneAndUpdate(
+        { _id: req.params.id },
+        { $push: { note: dbNote._id } },
+        { new: true }
+      );
+    })
+    .then(function(dbArticle) {
+      console.log(dbArticle);
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
 });
-app.get("/note/:id", function (req, res) {
+app.get("/note/:id", function(req, res) {
   // Grab every document in the Articles collection
   db.Note.find({ _id: req.params.id })
     .then(function(dbNote) {
       let hbsObject;
       hbsObject = {
-          note: dbNote
+        note: dbNote
       };
-      res.render("saved", hbsObject);   
+      res.render("saved", hbsObject);
     })
     .catch(function(err) {
       // If an error occurred, send it to the client
       res.json(err);
     });
 });
-
 
 // Start the server
 app.listen(PORT, function() {
