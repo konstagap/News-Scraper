@@ -1,0 +1,21 @@
+  <button id="scrape">scrape</button>
+  <a href="/saved">GO TO SAVED</a>
+  <h1>articles:</h1>
+
+    {{#if articles}}
+    {{#each articles}}
+    <div data-id="{{_id}}">
+      <a href={{link}} target="_blank" class="text-white">
+        <h2>{{title}}</h2>
+      </a>
+      <p class="card-text">
+        {{description}}
+      </p>
+      <button class="save">Save Article</button>
+    </div>
+    <hr>
+    {{/each}}
+    {{/if}}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="app.js"></script>

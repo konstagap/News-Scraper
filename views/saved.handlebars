@@ -1,0 +1,28 @@
+<a href="/">GO TO HOME PAGE</a>
+<h1>articles:</h1>
+
+
+{{#each articles}}
+<div data-id="{{_id}}">
+    <a href={{link}} target="_blank" class="text-white">
+        <h2>{{title}}</h2>
+    </a>
+    <p class="card-text">
+        {{description}}
+    </p>
+    <button data-id="{{_id}}" class="delete">Delete Article</button>
+    <button data-id="{{_id}}" class="note">Add a note</button>
+
+    <div style="display: none;" class="notesBox">
+        <div class="previousNotes">{{note}}</div>   
+        <h3>Note to article {{_id}}</h3>
+        <textarea class="noteText" rows="5"></textarea>
+        <button class="saveNote" data-id="{{_id}}" >Save Note</button>
+    </div>
+</div>
+<hr>
+{{/each}}
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="app.js"></script>
